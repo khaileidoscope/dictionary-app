@@ -1,2 +1,2 @@
 #GitHub-Flow
-This is the master repository our MP2.
+This is the master repository of our MP2.
