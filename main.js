@@ -1,4 +1,3 @@
-const apiKey = `https://api.dictionaryapi.dev/api/v2/entries/en/<word>`;
 const searchInput = document.getElementById("search-input");
 const searchBtn = document.getElementById("search-btn");
 const wordKeyword = document.querySelector(".word-keyword h2");
@@ -24,7 +23,7 @@ async function searchWord() {
 
   try {
     const response = await fetch(
-      `https://www.dictionaryapi.com/api/v3/references/learners/json/${word}?key=${apiKey}`
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
     );
     const data = await response.json();
 
@@ -32,23 +31,21 @@ async function searchWord() {
       const entry = data[0];
 
       // Display the word and type
-      wordKeyword.textContent = entry.meta.id;
-      wordType.textContent = entry.fl || "Not Available";
+      wordKeyword.textContent = word;
+      wordType.textContent = entry.meanings[0]?.partOfSpeech || "Not Available";
 
       // Display the first definition's meaning, example, synonyms, and antonyms
-      if (entry.shortdef) {
-        wordMeaning.textContent = entry.shortdef[0] || "Not Available";
-      }
-      if (entry.hwi && entry.hwi.prs) {
-        wordSamples.textContent = entry.hwi.prs[0].mw || "Not Available";
-      }
-      if (entry.meta.syns) {
+      if (entry.meanings[0]?.definitions) {
+        wordMeaning.textContent =
+          entry.meanings[0].definitions[0].definition || "Not Available";
+        wordSamples.textContent =
+          entry.meanings[0].definitions[0].example || "Not Available";
         wordSynonyms.textContent =
-          entry.meta.syns[0].join(", ") || "Not Available";
-      }
-      if (entry.meta.ants) {
+          entry.meanings[0].definitions[0].synonyms?.join(", ") ||
+          "Not Available";
         wordAntonyms.textContent =
-          entry.meta.ants[0].join(", ") || "Not Available";
+          entry.meanings[0].definitions[0].antonyms?.join(", ") ||
+          "Not Available";
       }
     } else {
       alert("Word not found in the dictionary.");
